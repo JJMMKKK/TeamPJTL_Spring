@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
+
+
+	<annotation-driven />											
+	<default-servlet-handler/>							
+	<resources mapping="/resources/**" location="/resources/" />
+	<resources mapping="/css/**" location="/WEB-INF/views/css/" />
+
+	<view-controller path="/" view-name="loginMain"/>
+	<!-- 로그인/회원가입 파트 -->	
+	<view-controller path="/Login" view-name="member/Login/loginMain"/>
+	<view-controller path="/FindInfo" view-name="member/Find_Info/searchMemberData"/>
+	<view-controller path="/FindAllPW" view-name="member/Find_Info/childFindAllPW"/>
+	<view-controller path="/IdDupilicate" view-name="member/Register/childCheckIDDupilicate"/>
+
+	<!-- 특정 요청 처리 한정으로 인터셉터 처리 -->
+	<!-- <beans:bean id="loginCheckInterceptor" class="com.interceptor.LoginCheckInterceptor"></beans:bean>
+	<interceptors>
+		<interceptor>
+			<mapping path="/loginCheck/**"/>app/LoginCheck가 붙는 모든 주소에 인터셉터 사용
+			<beans:ref bean="loginCheckInterceptor"/>
+		</interceptor>
+	</interceptors> -->
+
+
+	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<beans:property name="prefix" value="/WEB-INF/views/" />
+		<beans:property name="suffix" value=".jsp" />
+	</beans:bean>
+	
+	<context:component-scan base-package="com.*" />
+	
+</beans:beans>
