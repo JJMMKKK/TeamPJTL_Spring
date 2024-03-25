@@ -1,69 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
 	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:tx="http://www.springframework.org/schema/tx"
-	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd
-		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
 		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
-		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 
-	<!-- 1. placeholder -->	
-	<context:property-placeholder location="classpath:com/config/jdbc.properties"/>
-	<!-- 외부 프로퍼티 파일에서 값들을 읽어오기 위한 설정 -->
-	
-	
-	<!-- 2. jdbc연결 -->
-	<bean id="myDataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
-	<!-- 데이터베이스와의 연결을 관리하는 DataSource를 설정 -->
-	<!--  <property> 태그를 통해 외부 프로퍼티 파일에서 읽어온 값들을 사용 -->
-    	<property name="driverClassName" value="${oracle.driver}"/>
-		<property name="url" value="${oracle.url}"/>
-		<property name="username" value="${oracle.username}"/>
-		<property name="password" value="${oracle.password}"/>
+	<!-- Root Context: defines shared resources visible to all other web components -->
+
+	<!-- 1. jdbc.properties -->
+	<context:property-placeholder
+		location="classpath:com/config/jdbc.properties" />
+
+	<!-- 2.DBCP2 -->
+	<bean id="dataSource"
+		class="org.apache.commons.dbcp2.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${oracle.driver}"></property>
+		<property name="url" value="${oracle.url}"></property>
+		<property name="username" value="${oracle.username}"></property>
+		<property name="password" value="${oracle.password}"></property>
 	</bean>
 
-
-	<!-- 3. transaction -->
-	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-	<!-- 트랜잭션 관리를 위한 설정 -->
-		<property name="dataSource" ref="myDataSource">						<!-- ref에 2번의 id -->
-		<!--  <property>를 사용하여 데이터 소스를 지정 -->
-		</property>
+	<!-- transaction의 시작 -->
+	<bean id="txManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
 	</bean>
-	
-	
-	<!-- 4. annotation 기반 트랜잭션 -->
-	<tx:annotation-driven transaction-manager="txManager"/>
-	<!-- <tx:annotation-driven>을 통해 애노테이션 기반의 트랜잭션을 활성화 -->		
-	
-		
-	<!-- 5. SQLSessionFactoryBean -->	
-	<bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<!-- MyBatis의 SqlSessionFactory를 설정 -->
-		<property name="dataSource" ref="myDataSource">						<!-- ref에 2번의 id -->
-		</property>
+	<tx:annotation-driven
+		transaction-manager="txManager" />
+	<!-- transaction의 종료 -->
+	<!-- 3. SqlSessionFactoryBean -->
+	<bean id="sessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
 		<property name="mapperLocations">
 			<list>
+				<value>classpath:com/config/AdminBoardMapper.xml</value>
+				<value>classpath:com/config/AdminMemberMapper.xml</value>
 				<value>classpath:com/config/MemberMapper.xml</value>
+				<value>classpath:com/config/MessageMapper.xml</value>
+				<value>classpath:com/config/MyPageMapper.xml</value>
+				<value>classpath:com/config/PostMapper.xml</value>
+				<value>classpath:com/config/ReviewMapper.xml</value>
+				<value>classpath:com/config/ScrapMapper.xml</value>
 			</list>
 		</property>
 		<property name="typeAliases">
 			<list>
+				<value>com.dto.AdminBoardDTO</value>
+				<value>com.dto.AdminMemberDTO</value>
+				<value>com.dto.CommentDTO</value>
+				<value>com.dto.ContentDTO</value>
 				<value>com.dto.MemberDTO</value>
+				<value>com.dto.RateDTO</value>
+				<value>com.dto.ReportDTO</value>
+				<value>com.dto.ReviewDTO</value>
+				<value>com.dto.board.LikeDTO</value>
+				<value>com.dto.board.MessageDTO</value>
+				<value>com.dto.board.PageDTO</value>
+				<value>com.dto.board.PostCategoryDTO</value>
+				<value>com.dto.board.PostDTO</value>
+				<value>com.dto.board.PostInfoDTO</value>
+				<value>com.dto.board.PostPageDTO</value>
+				<value>com.dto.board.PostSaveDTO</value>
+				<value>com.dto.board.ScrapDTO</value>
 			</list>
 		</property>
 	</bean>
-	
-	
-	<!-- 6. SQLSessionTemplate : SQLSession 기능 -->
-	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
-		<!--  SQL 쿼리를 실행하기 위해 활용 -->
-		<constructor-arg name="sqlSessionFactory" ref="sessionFactory">		<!-- ref에 4번의 id -->
-		</constructor-arg>
+
+	<!-- 4.SqlSessionTemplate : SqlSesion기능 -->
+	<bean id="sqlSessionTemplate"
+		class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg name="sqlSessionFactory"
+			ref="sessionFactory"></constructor-arg>
 	</bean>
-		
+	<!-- 종료 -->
 </beans>

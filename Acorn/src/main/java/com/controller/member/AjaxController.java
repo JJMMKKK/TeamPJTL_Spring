@@ -2,13 +2,15 @@ package com.controller.member;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.service.member.LoginService;
 import com.service.member.RegisterService;
 
-@Controller
+@RestController
 public class AjaxController {
 
 	@Autowired
@@ -25,7 +27,6 @@ public class AjaxController {
 	//메인에서 로그인 여부 확인 에이젝스
 	@RequestMapping(value = "AjaxCheckIDPW", method = RequestMethod.POST)
 	public String AjaxCheckIDPW(String userId, String userPw) {
-		
 		boolean canLogin = lServ.loginPossible(userId, userPw);
 		String mesg = "loginSuccess";
 		if (!canLogin) {
@@ -36,23 +37,23 @@ public class AjaxController {
 	
 	//전체 비밀번호 찾기에서 질문에 따른 대답 확인 에이젝스
 	@RequestMapping(value = "AjaxMatchQnA", method = RequestMethod.POST)
-	public String AjaxMatchQnA(String confirmUserInfo, String userAnswer, String userId) {
+	public String AjaxMatchQnA(String userInfo, String answer, String userId) {
 		
 		boolean can_All_PW = false;
 		String mesg = "correct_Answer";
 																        //디버그 코드*****************************
-																        System.out.println(confirmUserInfo);
-																        System.out.println(userAnswer);
+																        System.out.println(userInfo);
+																        System.out.println(answer);
 																        System.out.println(userId);
 																        //*************************************
         
 		// 선택된 질문에 따라 사용되는 Method 변경**************************
-		if (confirmUserInfo.equals("nickname")) {
-		can_All_PW = lServ.findPWbyNickname(userAnswer, userId);
-		} else if (confirmUserInfo.equals("userPhoneNum")) {
-		can_All_PW = lServ.findPWbyPhoneNum(userAnswer, userId);
-		} else if (confirmUserInfo.equals("userEmail")) {
-		can_All_PW = lServ.findPWbyEmail(userAnswer, userId);
+		if (userInfo.equals("nickname")) {
+		can_All_PW = lServ.findPWbyNickname(answer, userId);
+		} else if (userInfo.equals("userPhoneNum")) {
+		can_All_PW = lServ.findPWbyPhoneNum(answer, userId);
+		} else if (userInfo.equals("userEmail")) {
+		can_All_PW = lServ.findPWbyEmail(answer, userId);
 		}
 		// 선택된 질문에 따라 사용되는 Method 변경**************************
 																		//디버그 코드*****************************                 

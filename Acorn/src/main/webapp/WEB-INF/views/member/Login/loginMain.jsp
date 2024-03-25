@@ -1,5 +1,7 @@
-<%@page import="com.dto.MemberDTO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,21 +14,15 @@
 </head>
 <body>
 
-<%
-	MemberDTO dto = (MemberDTO) session.getAttribute("loginUser");
-	if(dto != null){
-	System.out.println(dto.getUserId());}
-%>
-
-<div id="header">
-    <jsp:include page="/WEB-INF/views/common/navibarForMember.jsp" flush="true"></jsp:include><br>
-</div>
+<%-- <div id="header">
+    <jsp:include page="/common/navibarForMember.jsp" flush="true"></jsp:include><br>
+</div> --%>
 
 <div id="contentBody">
 	<div class="container" id="container">
 	<!-- 회원가입 컨테이너 -->
 	  <div class="form-container sign-up-container">
-	    <form action="<%=request.getContextPath()%>/RegisterTerms" method="post">
+	    <form action="<c:url value='/RegisterTerms'/>" method="post">
 	      <h1>회원가입</h1>
 	      <div class="social-container">
 	        <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
@@ -43,7 +39,7 @@
 	  
 	<!-- 로그인 컨테이너 -->
 	  <div class="form-container sign-in-container">
-	    <form id="loginForm" action="<%=request.getContextPath()%>/Mypage" method="post">
+	  <form id="loginForm" action="<c:url value='/Logined'/>" method="post">
 	      <h1>로그인</h1>
 	      <div class="social-container">
 	        <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
@@ -55,15 +51,16 @@
 	      <input type="password" id="userPw" name="userPw" class="loginSet" autocomplete="off" placeholder="패스워드"/>
 	      <button type="button" id="showPasswd" class="loginButtons">비밀번호 보이기</button>
 	      <button class="loginButtons">로그인</button>
+          <div id="confirmUserIdPwError" style="font-size: 14px"></div>
 	    
 	      <div class="row" id="rowBar">
               <div class="col-2"><input type="checkbox" id="userIdSave" name="userIdSave" class="loginSet"></div>
-              <div class="col-4 save-label">아이디 저장</div>
+              <div class="col-4 save-label" style="font-size: 13px">아이디 저장</div>
               <div class="col-2"><input type="checkbox" id="autoLogin" name="autoLogin"></div>
-              <div class="col-4 auto-login-label">자동 로그인</div>
+              <div class="col-4 auto-login-label" style="font-size: 13px">자동 로그인</div>
 		  </div>	 
 	      <div class="row">
-              <div class="col"><a href="<%=request.getContextPath()%>/FindInfo">회원정보 찾기</a></div>
+              <div class="col"><a href="<c:url value='/FindInfo'/>">회원정보 찾기</a></div>
 		  </div>	 
 	   </form>
 	  </div>
@@ -117,7 +114,7 @@
 	    
 	    //로그인 전송을 시도할 경우, 발동
 	    $("#loginForm").on("submit", function(event) {
-	        event.preventDefault(); // 폼이 서버로 전송되지 않도록 기본 동작을 막음
+	    	event.preventDefault(); // 폼이 서버로 전송되지 않도록 기본 동작을 막음
 	        
 	        document.cookie = "savedUserId=; expires=0; path=/";
 	        document.cookie = "savedUserPw=; expires=0; path=/";
@@ -152,7 +149,7 @@
 	        if (userId && userPw) {
 	            $.ajax({
 	                type: "POST",
-	                url: "AjaxCheckIDPW", 
+	                url: "<c:url value='/AjaxCheckIDPW'/>", 
 	                data: {
 	                    userId: userId,
 	                    userPw: userPw,
@@ -322,7 +319,6 @@
 	    }
 	});
 	//*************************************************************
-
 		
 	</script>
 

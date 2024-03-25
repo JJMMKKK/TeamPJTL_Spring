@@ -1,17 +1,17 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+
 <!DOCTYPE html>
 <html>
 
 <!-- 회원가입 3단계로 유저 정보를 입력하는 페이지의 jsp -->
 
-<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/member/register_input.css">
-
 <head>
-<meta charset="UTF-8">
-<title>회원 가입</title>
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
+	<meta charset="UTF-8">
+	<title>회원 가입</title>
+	<link rel="stylesheet" type="text/css" href="<c:url value='/css/member/register_input.css'/>">
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </head>
 
 <body>
@@ -25,7 +25,7 @@
 
 	<div class="container">
 		<h1>회원가입</h1>
-		<form id="registerForm" action="<%=request.getContextPath()%>/InsertData" method="post">
+		<form id="registerForm" action="<c:url value='/InsertData'/>" method="post">
 			
 			<!-- 아이디 입력칸(영어+숫자로 4글자 이상)(반드시 입력되어야 함)(직접 입력은 불가하며, 자식창을 통해서만 입력 가능) -->
 			<label for="userId">아이디 (영어 + 숫자, 최소 4글자)</label> 
@@ -46,13 +46,6 @@
 			<label for="userName">유저 이름</label> 
 				<input type="text" id="userName" name="userName" value="<%=userName%>" readonly> 
 				
-			<!-- 유저 닉네임 입력칸(최소 2글자 이상)(반드시 입력) -->
-			<label for="nickname">유저 닉네임 (최소 2글자)</label> 
-				<input type="text" id="nickname" name="nickname" minlength="2" required>
-				<!-- DB에 저장된 닉네임이 있을 경우, 문구 출력 --> 
-				<span id="confirmNicknameError" style="color: red;"></span>
-				<span id="loadingSpinner_for_nickname" class="loadingSpinner"></span>
-
 			<!-- 유저 SSN 입력칸(회원가입 2단계에서 입력한 값을 통해 입력)(직접 입력 불가) -->
 			<label for="userSSN1">주민등록번호</label>
 				<div style="display: flex; gap: 5px;">
@@ -67,6 +60,13 @@
 					<option value="male" selected>남성</option>
 					<option value="female">여성</option>
 				</select> 
+			
+			<!-- 유저 닉네임 입력칸(최소 2글자 이상)(반드시 입력) -->
+			<label for="nickname">유저 닉네임 (최소 2글자)</label> 
+				<input type="text" id="nickname" name="nickname" minlength="2" required>
+				<!-- DB에 저장된 닉네임이 있을 경우, 문구 출력 --> 
+				<span id="confirmNicknameError" style="color: red;"></span>
+				<span id="loadingSpinner_for_nickname" class="loadingSpinner"></span>
 			
 			<!-- 유저 핸드폰 번호(반드시 입력)(첫 번째 3자리는 seleect)(두 번째/세 번째는 최대 4자리까지 직접 입력) -->
 			<label for="userPhoneNum1">핸드폰 번호</label>
@@ -103,7 +103,6 @@
 				<span id="confirmUserEmailError" style="color: red;"></span>
 				<span id="loadingSpinner_for_Email" class="loadingSpinner"></span>
 				
-
 			<button id="register_button" type="submit">가입</button>
 		</form>
 	</div>
@@ -112,7 +111,7 @@
 	<script type="text/javascript">
 		//ID 새창 열기
 		function openIdWindow() {
-			var popup = window.open("<%=request.getContextPath()%>/IdDupilicate", "아이디 확인", "width=400,height=200");
+			var popup = window.open("<c:url value='/IdDupilicate'/>", "아이디 확인", "width=400,height=200");
 			
 			popup.onbeforeunload = function() {
 				var confirmedUserId = popup.$("#confirmUserId").val();
@@ -128,7 +127,7 @@
 			
 			$.ajax({
                 type: "POST",
-                url: "AjaxNicknameDuplicate", 
+                url: "<c:url value='/AjaxNicknameDuplicate'/>", 
                 data: { nickname: nickname },
                 
                 beforeSend: function () {
@@ -190,7 +189,7 @@
 		    if (userPhoneNum1 && userPhoneNum2 && userPhoneNum3) {
 		        $.ajax({
 		            type: "POST",
-		            url: "AjaxPhoneNumDuplicate", 
+		            url: "<c:url value='/AjaxPhoneNumDuplicate'/>", 
 		            
 		            beforeSend: function () {
 	                    // AJAX 요청 전에 로딩 표시 보여주기
@@ -268,7 +267,7 @@
 		    if (userEmailId && userEmailDomain) {
 		        $.ajax({
 		            type: "POST",
-		            url: "AjaxEmailDuplicate", 
+		            url: "<c:url value='/AjaxEmailDuplicate'/>", 
 		            
 		            beforeSend: function () {
 	                    // AJAX 요청 전에 로딩 표시 보여주기
@@ -319,7 +318,7 @@
 		    if (userEmailId && userEmailDomain) {
 		        $.ajax({
 		            type: "POST",
-		            url: "AjaxEmailDuplicate", 
+		            url: "<c:url value='/AjaxEmailDuplicate'/>", 
 		            data: {
 		            	userEmailId: userEmailId,
 		            	userEmailDomain: userEmailDomain,
