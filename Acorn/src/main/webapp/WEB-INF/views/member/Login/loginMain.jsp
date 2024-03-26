@@ -14,9 +14,9 @@
 </head>
 <body>
 
-<%-- <div id="header">
+<div id="header">
     <jsp:include page="/common/navibarForMember.jsp" flush="true"></jsp:include><br>
-</div> --%>
+</div>
 
 <div id="contentBody">
 	<div class="container" id="container">
