@@ -1,5 +1,9 @@
 package com.controller.member;
 
+import java.io.UnsupportedEncodingException;
+import java.security.GeneralSecurityException;
+import java.security.NoSuchAlgorithmException;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,11 +24,16 @@ public class LoginController {
 
 	@Autowired
 	LoginService serv;
-
+	
+	@Autowired
+	SecurityController sc;
+	
 	//로그인
 	@RequestMapping(value = "/Logined", method = RequestMethod.POST)
-	public String LoginToMypage(String userId, String userPw, HttpSession session) {
-		MemberDTO dto = serv.login(userId, userPw);
+	public String LoginToMypage(String userId, String userPw, HttpSession session) throws NoSuchAlgorithmException, UnsupportedEncodingException, GeneralSecurityException {
+		String realUserPw = sc.EncodePW(userPw);
+		System.out.println(realUserPw);
+		MemberDTO dto = serv.login(userId, realUserPw);
 
 		if (dto != null) {
 			session.setAttribute("loginUser", dto);
@@ -32,7 +41,6 @@ public class LoginController {
 		} else {
 			return "member/Find_Info/cantFindUserdata";
 		}
-
 	}
 
 	//로그아웃
@@ -45,7 +53,6 @@ public class LoginController {
 		} else {
 			return "member/Find_Info/cantFindUserdata";
 		}
-
 	}
 	
 	//아이디 찾기
@@ -59,13 +66,16 @@ public class LoginController {
 		} else {
 			return "member/Find_Info/cantFindUserdata";
 		}
-
 	}
 	
 	//비밀번호 찾기
 	@RequestMapping(value = "/SearchPartPW", method = RequestMethod.POST)
-	public String SearchPartPW(Model model, HttpServletResponse response, String userId, String userName, String ssn1, String ssn2) {
+	public String SearchPartPW(Model model, HttpServletResponse response, String userId, String userName, String ssn1, String ssn2) throws NoSuchAlgorithmException, UnsupportedEncodingException, GeneralSecurityException {
 		MemberDTO dto = serv.findUserPW(userId, userName, ssn1, ssn2);
+		String userPw = sc.DecodePW(dto.getUserPw());
+		System.out.println(userPw);
+		dto.setUserPw(userPw);
+		
 		if (dto != null) {
 			Cookie userIdCookie = new Cookie("findPW_userid",userId);
 			userIdCookie.setMaxAge(30*60);
@@ -80,8 +90,13 @@ public class LoginController {
 	
 	//전체 비밀번호 출력용
 	@RequestMapping(value = "/SearchAllPW", method = RequestMethod.GET)
-	public String SearchAllPW(Model model, String userId, HttpSession session) {
+	public String SearchAllPW(Model model, String userId, HttpSession session) throws NoSuchAlgorithmException, UnsupportedEncodingException, GeneralSecurityException {
 		MemberDTO dto = serv.selectMemberData(userId);
+		String userPw = sc.DecodePW(dto.getUserPw());
+		System.out.println(userPw);
+		dto.setUserPw(userPw);
+		System.out.println(dto);
+		
 		if (dto != null) {
 			model.addAttribute("dto", dto);
 			

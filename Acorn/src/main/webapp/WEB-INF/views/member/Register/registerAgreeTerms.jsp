@@ -18,7 +18,7 @@
 
     <div class="container">
     
-        <h1>${userName}님의 약관 동의 페이지</h1>
+        <h1>약관 동의 페이지</h1>
 
         <form id="agreementForm" action="<c:url value='/CheckExistUser'/>" method="post">
 		
@@ -26,23 +26,23 @@
 			<input type="hidden" name="ssn1" value="${ssn1}">
 			<input type="hidden" name="ssn2" value="${ssn2}">
 
-            <div>
+            <div><Span>이용약관 동의(필수)</Span>
                 <textarea readonly="readonly">
-                    이용 약관 내용
+	                <jsp:include page="../Terms/Agreement.jsp" flush="true"></jsp:include>
                 </textarea>
                 <label><input type="checkbox" class="terms" name="checked_Agreement">이용 약관에 동의합니다.</label>
             </div>
 
-            <div>
+            <div><Span>개인정보 처리방침(필수)</Span>
                 <textarea readonly="readonly">
-                    개인정보 처리방침 내용
+	                <jsp:include page="../Terms/Info.jsp" flush="true"></jsp:include>
                 </textarea>
                 <label><input type="checkbox" class="terms" name="checked_Info">개인정보 처리방침에 동의합니다.</label>
             </div>
 
-            <div>
+            <div><Span>회원 탈퇴 및 서비스 이용 중지 규정(필수)</Span>
                 <textarea readonly="readonly">
-                    회원 탈퇴 및 서비스 이용 중지 규정 내용
+   	                <jsp:include page="../Terms/Withdraw.jsp" flush="true"></jsp:include>
                 </textarea>
                 <label><input type="checkbox" class="terms" name="checked_Withdraw">회원 탈퇴 및 서비스 이용 중지에 동의합니다.</label>
             </div>
